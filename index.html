@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-image: url(https://marketplace.canva.com/EAE_NRav_uY/1/0/1600w/canva-red-neon-organized-desktop-gaming-background---desktop-wallpaper-2eq-ewMjw4U.jpg);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .quiz-container {
+      width: 80%;
+      max-width: 335px;
+      padding: 20px;
+      background-color: #ffe5de;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      border-radius: 10px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #question {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+
+    #options button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      font-size: 1em;
+      background-color: #8b0e1c;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    #options button.correct {
+      background-color: #28a745 !important;
+    }
+
+    #options button.wrong {
+      background-color: #ff041d !important;
+    }
+
+    #nextButton {
+      display: none;
+      margin-top: 20px;
+      padding: 10px 19px;
+      font-size: 1em;
+      background-color: #e76947;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    #nextButton:hover {
+      background-color: black;
+    }
+
+    #score {
+      margin-top: 20px;
+      font-size: 1.3em;
+      color: #333;
+    }
+
+    #retakeButton {
+      margin-top: 20px;
+      padding: 10px 19px;
+      font-size: 1em;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    #retakeButton:hover {
+      background-color: black;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-container">
+    <h1>Quiz Application</h1>
+    <div id="question"></div>
+    <div id="options"></div>
+    <div id="feedback"></div>
+    <button id="nextButton" onclick="nextQuestion()">Next Question</button>
+    <div id="score"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "What is the capital of France?",
+        options: ["Berlin", "Madrid", "Paris", "Rome"],
+        answer: 2
+      },
+      {
+        question: "What is 232 + 67?",
+        options: ["399", "342", "299", "300"],
+        answer: 2
+      },
+      {
+        question: "What is the largest planet in our solar system?",
+        options: ["Earth", "Mars", "Jupiter", "Saturn"],
+        answer: 2
+      },
+      {
+        question: "Who wrote 'Romeo and Juliet'?",
+        options: ["Mark Twain", "Jane Austen", "William Shakespeare", "Charles Dickens"],
+        answer: 2
+      },
+      {
+        question: "What is the boiling point of water?",
+        options: ["100°C", "90°C", "80°C", "70°C"],
+        answer: 0
+      },
+      {
+        question: "Which element has the chemical symbol 'O'?",
+        options: ["Oxygen", "Gold", "Osmium", "Oganesson"],
+        answer: 0
+      },
+      {
+        question: "How many continents are there on Earth?",
+        options: ["5", "6", "7", "8"],
+        answer: 2
+      },
+      {
+        question: "What is the longest river in the world?",
+        options: ["Amazon River", "Nile River", "Yangtze River", "Mississippi River"],
+        answer: 1
+      },
+      {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Venus", "Mars", "Jupiter", "Saturn"],
+        answer: 1
+      },
+      {
+        question: "What is the hardest natural substance on Earth?",
+        options: ["Gold", "Iron", "Diamond", "Silver"],
+        answer: 2
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function displayQuestion() {
+      document.getElementById("question").textContent = questions[currentQuestionIndex].question;
+      document.getElementById("options").innerHTML = "";
+      document.getElementById("feedback").textContent = "";
+
+      questions[currentQuestionIndex].options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.textContent = option;
+        button.onclick = () => selectAnswer(index, button);
+        document.getElementById("options").appendChild(button);
+      });
+    }
+
+    function selectAnswer(selectedIndex, button) {
+      const correctAnswerIndex = questions[currentQuestionIndex].answer;
+      const allButtons = document.querySelectorAll("#options button");
+
+      if (selectedIndex === correctAnswerIndex) {
+        score++;
+        button.classList.add("correct");
+      } else {
+        button.classList.add("wrong");
+        allButtons[correctAnswerIndex].classList.add("correct");
+      }
+
+      allButtons.forEach((btn) => btn.disabled = true);
+
+      document.getElementById("nextButton").style.display = "block";
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      document.getElementById("nextButton").style.display = "none";
+
+      if (currentQuestionIndex < questions.length) {
+        displayQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById("question").textContent = "Quiz Completed!";
+      document.getElementById("options").innerHTML = "";
+      document.getElementById("feedback").textContent = "";
+
+      const resultHTML = `<h3>Your Final Score: ${score}/${questions.length}</h3>`;
+      document.getElementById("options").innerHTML = resultHTML;
+
+      const retakeButton = document.createElement("button");
+      retakeButton.id = "retakeButton";
+      retakeButton.textContent = "Retake Quiz";
+      retakeButton.onclick = retakeQuiz;
+      document.getElementById("options").appendChild(retakeButton);
+    }
+
+    function retakeQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      displayQuestion();
+    }
+
+    displayQuestion();
+  </script>
+</body>
+
+</html>
